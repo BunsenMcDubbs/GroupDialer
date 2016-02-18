@@ -1,5 +1,6 @@
 package co.andrewdai.android.groupdialer;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,9 +36,7 @@ public class MyCalleeRecyclerViewAdapter extends RecyclerView.Adapter<MyCalleeRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mNameView.setText(mValues.get(position).fullname());
-        holder.mPhoneView.setText(mValues.get(position).phone);
+        holder.setCalleeInfo(mValues.get(position));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +55,7 @@ public class MyCalleeRecyclerViewAdapter extends RecyclerView.Adapter<MyCalleeRe
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements Callee.CalleeStateListener{
         public final View mView;
         public final TextView mNameView;
         public final TextView mPhoneView;
@@ -69,9 +68,31 @@ public class MyCalleeRecyclerViewAdapter extends RecyclerView.Adapter<MyCalleeRe
             mPhoneView = (TextView) view.findViewById(R.id.callee_phone);
         }
 
+        public void setCalleeInfo(Callee c) {
+            mItem = c;
+            mNameView.setText(c.fullname);
+            mPhoneView.setText(c.phone);
+
+            mItem.attach(this);
+        }
+
+        public void refresh() {
+            System.out.println("Refresh!!");
+            if (mItem.wasCalled()) {
+                mView.setBackgroundColor(Color.GRAY);
+            } else {
+                mView.setBackgroundColor(Color.WHITE);
+            }
+        }
+
         @Override
         public String toString() {
             return super.toString() + mItem.toString();
+        }
+
+        @Override
+        public void calleeCalledStateChanged(Callee c, boolean called) {
+            refresh();
         }
     }
 }
