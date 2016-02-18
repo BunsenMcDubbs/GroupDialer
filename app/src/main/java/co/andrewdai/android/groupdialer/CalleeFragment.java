@@ -2,6 +2,7 @@ package co.andrewdai.android.groupdialer;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import co.andrewdai.android.groupdialer.dummy.DummyContent;
-import co.andrewdai.android.groupdialer.dummy.DummyContent.DummyItem;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,9 +72,41 @@ public class CalleeFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyCalleeRecyclerViewAdapter(Callee.TEST_ITEMS, mListener));
+            try {
+                List<Callee> fromCSV = loadFromCSV();
+                recyclerView.setAdapter(new MyCalleeRecyclerViewAdapter(fromCSV, mListener));
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+//            recyclerView.setAdapter(new MyCalleeRecyclerViewAdapter(Callee.TEST_ITEMS, mListener));
         }
         return view;
+    }
+
+    private static final String CSVPATH = "attendees.csv";
+
+    private List<Callee> loadFromCSV() throws IOException {
+        List<Callee> callees = new ArrayList<Callee>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getContext().getAssets().open(CSVPATH)));
+        try {
+            String csvLine;
+            while ((csvLine = reader.readLine()) != null) {
+                String[] row = csvLine.split(",");
+                callees.add(new Callee(row[1], row[2], row[3]));
+            }
+        }
+        catch (IOException ex) {
+            throw new RuntimeException("Error in reading CSV file: "+ex);
+        }
+        finally {
+            try {
+                reader.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Error while closing input stream: "+e);
+            }
+        }
+        return callees;
     }
 
 

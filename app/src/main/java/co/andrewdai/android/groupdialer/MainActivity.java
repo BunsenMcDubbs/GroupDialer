@@ -39,10 +39,11 @@ public class MainActivity extends AppCompatActivity implements CalleeFragment.On
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             if(TelephonyManager.CALL_STATE_RINGING == state) {
+                // TODO add flag here to note that this app did not initiate a call
                 Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
             }
             if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
-                //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
+                //wait for phone to go offhook (set a boolean flag) so you know your app initiated the call.
                 Log.i(LOG_TAG, "OFFHOOK");
                 offhook = true;
             }
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements CalleeFragment.On
                 if (offhook) {
                     // restart app
                     Intent openMe = new Intent(getApplicationContext(), MainActivity.class);
-                    openMe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //experiment with the flags
+                    openMe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(openMe);
                     offhook = false;
                 }
