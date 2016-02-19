@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import co.andrewdai.android.groupdialer.CalleeFragment.OnListFragmentInteractionListener;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,6 +48,15 @@ public class MyCalleeRecyclerViewAdapter extends RecyclerView.Adapter<MyCalleeRe
                 }
             }
         });
+        if (mValues.get(position).wasCalled()) {
+            holder.mView.setBackgroundColor(Color.GRAY);
+        } else {
+            holder.mView.setBackgroundColor(Color.WHITE);
+        }
+    }
+
+    public List<Callee> getCallees() {
+        return mValues;
     }
 
     @Override

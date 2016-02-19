@@ -10,5 +10,15 @@
         android:layout_height="wrap_content"
         android:name="co.andrewdai.android.groupdialer.CalleeFragment"
         android:id="@+id/main_calleelist"
-        tools:layout="@layout/fragment_callee_list" />
+        tools:layout="@layout/fragment_callee_list"
+        android:layout_above="@+id/main_callall" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call All"
+        android:id="@+id/main_callall"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

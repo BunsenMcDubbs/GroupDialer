@@ -83,13 +83,14 @@ public class CalleeFragment extends Fragment {
         return view;
     }
 
-    private static final String CSVPATH = "attendees.csv";
+    private static final String CSVPATH = "dev/attendees.csv";
 
     private List<Callee> loadFromCSV() throws IOException {
         List<Callee> callees = new ArrayList<Callee>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(getContext().getAssets().open(CSVPATH)));
         try {
             String csvLine;
+            reader.readLine(); // skip headers
             while ((csvLine = reader.readLine()) != null) {
                 String[] row = csvLine.split(",");
                 callees.add(new Callee(row[1], row[2], row[3]));
